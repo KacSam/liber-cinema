@@ -45,4 +45,13 @@ public class BookController {
         books.put(books.size(), book);
         return ResponseEntity.status(201).body("Book added successfully");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteMovie(@PathVariable int id){
+        if(books.get(id) == null){
+            return ResponseEntity.notFound().build();
+        }
+        books.remove(id);
+        return ResponseEntity.ok().build();
+    }
 }

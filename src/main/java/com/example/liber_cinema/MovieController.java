@@ -45,4 +45,13 @@ public class MovieController {
         movies.put(movies.size(), movie);
         return ResponseEntity.status(201).body("Movie added successfully");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteMovie(@PathVariable int id){
+        if(movies.get(id) == null){
+            return ResponseEntity.notFound().build();
+        }
+        movies.remove(id);
+        return ResponseEntity.ok().build();
+    }
 }
