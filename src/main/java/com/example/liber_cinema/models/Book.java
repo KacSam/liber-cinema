@@ -1,14 +1,10 @@
 package com.example.liber_cinema.models;
 
-
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -28,13 +24,24 @@ public class Book {
 
     private String author;
     private String genre;
-    private String publicationDate;
+
+    @Column(name = "publication_date")
+    private LocalDate publicationDate;
+
     private String description;
+
+    @Column(name = "external_rating")
     private String externalRating;
 
     @OneToMany(mappedBy = "book")
+    @JsonIgnore
     private Set<Rating> ratings;
 
     @OneToMany(mappedBy = "book")
+    @JsonIgnore
     private Set<UserList> userLists;
+
+
+
+
 }

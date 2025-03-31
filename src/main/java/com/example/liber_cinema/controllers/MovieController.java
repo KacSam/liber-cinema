@@ -1,56 +1,43 @@
 package com.example.liber_cinema.controllers;
 
 
+import com.example.liber_cinema.models.Movie;
+import com.example.liber_cinema.services.MovieService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/movies")
+@RequiredArgsConstructor
 public class MovieController {
 
-    private static final Map<Integer, String> movies = new HashMap<>();
-    static {
-        movies.put(0, "Interstellar");
-        movies.put(1, "Harry Potter");
-        movies.put(2, "Star Wars");
-        movies.put(3, "The Godfather");
-        movies.put(4, "John Wick");
-    }
+    private final MovieService movieService;
 
     @GetMapping
-    public ResponseEntity<Object> getMovies(){
-        return ResponseEntity.ok(movies);
+    public ResponseEntity<List<Movie>> getMovies() {
+        return ResponseEntity.ok(movieService.getAllMovies());
     }
 
-    @GetMapping("/{movieId}")
-    public ResponseEntity<Object> getMovieById(@PathVariable int movieId){
-        String movie = movies.get(movieId);
-        if(movie == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(movies.get(movieId));
+    @GetMapping("/{id}")
+    public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
+        return movieService.getMovieById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
+
     @PostMapping
-    public ResponseEntity<Object> addNewMovie(@RequestBody String movie){
-        if(movie == null || movies.containsKey(movie)) {
-            return ResponseEntity.badRequest().body("Movie title cannot be empty");
-        }
-        if (movies.containsValue(movie)) {
-            return ResponseEntity.badRequest().body("Movie already exists");
-        }
-        movies.put(movies.size(), movie);
-        return ResponseEntity.status(201).body("Movie added successfully");
+    public ResponseEntity<Movie> addNewMovie(@RequestBody Movie movie) {
+        return ResponseEntity.status(201).body(movieService.addMovie(movie));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteMovie(@PathVariable int id){
-        if(movies.get(id) == null){
-            return ResponseEntity.notFound().build();
-        }
-        movies.remove(id);
+    public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
+        movieService.deleteMovie(id);
         return ResponseEntity.ok().build();
     }
 }
