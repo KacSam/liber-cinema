@@ -32,9 +32,9 @@ public class Book {
     private String description;
     private String externalRating;
 
-    @OneToMany
+    @OneToMany(mappedBy = "book")
     private Set<Rating> ratings;
 
-    @OneToMany
+    @OneToMany(mappedBy = "book")
     private Set<UserList> userLists;
 }

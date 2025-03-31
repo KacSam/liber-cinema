@@ -27,10 +27,10 @@ public class Movie {
     private String duration;
     private double imdbRating;
 
-    @OneToMany
+    @OneToMany(mappedBy = "movie")
     private Set<Rating> ratings;
 
-    @OneToMany
+    @OneToMany(mappedBy = "movie")
     private Set<UserList> userLists;
 
 }
