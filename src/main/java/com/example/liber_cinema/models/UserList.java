@@ -1,6 +1,7 @@
 package com.example.liber_cinema.models;
 
 
+import com.example.liber_cinema.models.enums.UserListType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,7 +36,7 @@ public class UserList {
     private Book book;
 
     @Enumerated(EnumType.STRING)
-    private ListType listType;
+    private UserListType UserListType;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
