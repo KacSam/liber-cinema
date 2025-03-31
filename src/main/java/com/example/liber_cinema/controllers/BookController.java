@@ -1,4 +1,4 @@
-package com.example.liber_cinema;
+package com.example.liber_cinema.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
