@@ -1,11 +1,15 @@
 import React from 'react';
 import './NavBar.css';
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+    onBooksClick: () => void;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ onBooksClick }) => {
     return (
         <nav className = "nav-container">
             <div className="nav-bar">
-                <button className="nav-button">Książki</button>
+                <button className="nav-button" onClick={onBooksClick}>Książki</button>
                 <button className="nav-button">Serie</button>
                 <button className="nav-button">Rankingi</button>
                 <button className="nav-button">Moja biblioteka</button>
