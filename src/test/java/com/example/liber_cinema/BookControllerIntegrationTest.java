@@ -18,9 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test") // <-- ważne! Używa application-test.properties
-@Transactional // <-- resetuje bazę po każdym teście
-public class BookControllerTest {
+@ActiveProfiles("test")
+@Transactional
+public class BookControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,7 +59,7 @@ public class BookControllerTest {
         mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"New Book\", \"author\": \"New Author\", \"genre\": \"New Genre\", \"publicationDate\": \"2022-03-03\", \"description\": \"New Description\", \"externalRating\": \"7.5\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("New Book"))
                 .andExpect(jsonPath("$.author").value("New Author"));
 
