@@ -17,6 +17,13 @@
     border-bottom: 1px solid #ddd;
 }
 
+.movie-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 .tab-button {
     background: none;
     border: none;
@@ -80,6 +87,67 @@
     padding: 30px;
 }
 
+.rating-stars {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.star-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #ddd;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.star-button.filled {
+    color: #ffd700;
+}
+
+.rating-value {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.favorite-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #e91e63;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.favorite-button:hover {
+    background-color: rgba(233, 30, 99, 0.1);
+    transform: scale(1.1);
+}
+
+.favorite-button.active {
+    color: #e91e63;
+}
+
+.favorite-button:not(.active) {
+    opacity: 0.5;
+}
+
+.favorite-button:not(.active):hover {
+    opacity: 0.8;
+}
+
 .error-message {
     color: #d9534f;
     text-align: center;
@@ -87,4 +155,44 @@
     border: 1px solid #d9534f;
     border-radius: 5px;
     margin: 20px 0;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.move-to-watched-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.move-to-watched-button:hover {
+    background-color: #45a049;
 }
