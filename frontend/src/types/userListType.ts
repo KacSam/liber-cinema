@@ -1,1 +1,1 @@
-export type UserListType = 'WATCHLIST' | 'WATCHED' | 'FAVORITES';
+export type UserListType = 'WATCHLIST' | 'WATCHED';

@@ -40,7 +40,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMoviesClick, onLibraryClick }) => {
 
     return (
         <nav className="nav-container">            <div className="nav-bar">
-                <button className="nav-button" onClick={onMoviesClick}>Filmy</button>
+                <button className="nav-button" onClick={onMoviesClick}>Strona główna</button>
                 <button className="nav-button">Seriale</button>
                 <button className="nav-button">Rankingi</button>
                 <button className="nav-button" onClick={onLibraryClick}>Moja biblioteka</button>

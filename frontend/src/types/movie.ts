@@ -7,4 +7,6 @@ export interface Movie {
     releaseDate?: string;
     duration?: string;
     imdbRating?: number;
+    userRating?: number;
+    isFavorite?: boolean;
 }
