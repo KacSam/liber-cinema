@@ -3,9 +3,11 @@ package com.example.liber_cinema.controllers;
 import com.example.liber_cinema.models.Book;
 import com.example.liber_cinema.services.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +37,19 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<Book> addNewBook(@RequestBody Book book){
+
+        if (book.getTitle() == null || book.getTitle().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         Book createdBook = bookService.addBook(book);
-        return ResponseEntity.ok(createdBook);
+
+        if (createdBook == null) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
+        URI location = URI.create("/books/" + createdBook.getId());
+
+        return ResponseEntity.created(location).body(createdBook);
     }
 
     @DeleteMapping("/{bookId}")
