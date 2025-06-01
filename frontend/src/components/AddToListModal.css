@@ -27,3 +27,34 @@
     font-size: 16px;
     color: #333;
 }
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.star-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.star-button.filled {
+    color: #ffd700;
+}
+
+.star-button:hover {
+    color: #ffd700;
+}
+
+.rating-value {
+    margin-left: 8px;
+    font-size: 16px;
+    color: #666;
+}
