@@ -30,7 +30,6 @@ public class BookControllerIntegrationTest {
 
     @Test
     public void testGetBooks() throws Exception {
-        // Przygotowanie danych w bazie
         Book book1 = new Book(null, "Book 1", "Author 1", "Genre 1", LocalDate.of(2020, 1, 1), "Description 1", "8.5", null, null);
         Book book2 = new Book(null, "Book 2", "Author 2", "Genre 2", LocalDate.of(2021, 2, 2), "Description 2", "9.0", null, null);
         bookRepository.save(book1);
@@ -63,7 +62,6 @@ public class BookControllerIntegrationTest {
                 .andExpect(jsonPath("$.title").value("New Book"))
                 .andExpect(jsonPath("$.author").value("New Author"));
 
-        // dodatkowo możesz tu sprawdzić, czy rzeczywiście w bazie pojawił się wpis
     }
 
     @Test

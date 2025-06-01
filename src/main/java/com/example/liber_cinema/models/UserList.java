@@ -33,10 +33,8 @@ public class UserList {
 
     @ManyToOne
     @JoinColumn(name = "book_id")
-    private Book book;
-
-    @Enumerated(EnumType.STRING)
-    private UserListType UserListType;
+    private Book book;    @Enumerated(EnumType.STRING)
+    private UserListType userListType;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
