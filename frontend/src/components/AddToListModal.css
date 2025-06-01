@@ -1,0 +1,29 @@
+.add-list-modal h3 {
+    text-align: center;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+.list-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.list-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.list-option input {
+    margin-right: 10px;
+}
+
+.list-option span {
+    font-size: 16px;
+    color: #333;
+}

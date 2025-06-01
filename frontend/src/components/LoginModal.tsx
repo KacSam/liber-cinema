@@ -3,9 +3,10 @@ import './LoginModal.css';
 
 interface LoginModalProps {
     onClose: () => void;
+    onLoginSuccess: () => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -20,6 +21,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
 
         try {
             if (isLogin) {
+                console.log("Attempting login for:", username);
+                
                 // Logowanie
                 const response = await fetch('http://localhost:8080/api/auth/login', {
                     method: 'POST',
@@ -29,24 +32,40 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
                     body: JSON.stringify({ username, password }),
                 });
 
-                const data = await response.json();
-
+                console.log("Login response status:", response.status);
+                
                 if (!response.ok) {
-                    throw new Error(data.message || 'Nieprawidłowy login lub hasło');
+                    const errorText = await response.text();
+                    console.error("Login error response:", errorText);
+                    throw new Error('Nieprawidłowy login lub hasło');
+                }                const data = await response.json();
+                console.log("Login response data:", data);
+
+                // Analiza odpowiedzi JWT
+                console.log("JWT Response structure:", Object.keys(data));
+                const token = data.token;
+                
+                if (!token) {
+                    console.error("No token found in response. Response data:", data);
+                    throw new Error("Brak tokena w odpowiedzi z serwera");
                 }
 
                 // Zapisz token JWT w localStorage
-                localStorage.setItem('token', data.token);
+                localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify({
                     id: data.id,
                     username: data.username,
                     email: data.email
                 }));
 
+                // Dodajmy test tokena od razu po zapisaniu
+                const savedToken = localStorage.getItem('token');
+                console.log("Saved token:", savedToken ? `${savedToken.substring(0, 15)}...` : 'null');
+                
                 setSuccess('Zalogowano pomyślnie!');
                 setTimeout(() => {
                     onClose();
-                    window.location.reload(); // Odśwież stronę aby zastosować zmiany stanu logowania
+                    onLoginSuccess();
                 }, 1000);
             } else {
                 // Rejestracja
@@ -74,11 +93,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
                 }, 2000);
             }
         } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError('Wystąpił nieznany błąd');
-            }
+            console.error("Login error:", err);
+            setError(err instanceof Error ? err.message : 'Wystąpił nieznany błąd');
         }
     };
 

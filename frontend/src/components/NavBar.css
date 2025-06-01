@@ -4,6 +4,7 @@
     background-color: #846267;
     border-bottom: 1px solid #e7e7e7;
     width: 100%;
+    z-index: 100;
 }
 
 .nav-bar {
@@ -34,16 +35,31 @@
 }
 
 .login-button {
-    background-color: #007bff;
-    color: white;
+    font-weight: bold;
+}
+
+.logout-button {
+    background-color: #D4D6B9;
+    color: #846267;
     border-radius: 4px;
 }
 
-.login-button:hover {
-    background-color: #0056b3;
-    color: white;
+.logout-button:hover {
+    background-color: #c1c3a8;
 }
 
-.nav-button:last-child {
-    font-weight: bold;
+.search-icon {
+    font-size: 16px;
+    padding: 10px 15px;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+}
+
+.username {
+    color: #D4D6B9;
+    margin-right: 10px;
+    font-size: 12px;
 }
