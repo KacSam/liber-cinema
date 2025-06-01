@@ -42,9 +42,10 @@ public class UserList {
     @JoinColumn(name = "book_id")
     @JsonIgnoreProperties({"userLists"})
     private Book book;@Enumerated(EnumType.STRING)
-    private UserListType userListType;
+    private UserListType userListType;    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();    @Column(name = "is_favorite")
+    private boolean isFavorite = false;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Integer userRating;
 
 }

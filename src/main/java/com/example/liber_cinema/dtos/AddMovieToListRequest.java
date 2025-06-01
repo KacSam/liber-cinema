@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class AddMovieToListRequest {
     private Movie movie;
     private UserListType listType;
+    private Boolean isFavorite;
+    private Integer userRating;
 }

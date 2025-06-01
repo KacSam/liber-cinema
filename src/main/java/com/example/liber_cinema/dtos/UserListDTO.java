@@ -12,12 +12,16 @@ public class UserListDTO {
     private String username;
     private Movie movie;
     private UserListType userListType;
+    private boolean isFavorite;
+    private Integer userRating;
 
     public UserListDTO(UserList userList) {
         this.id = userList.getId();
         this.username = userList.getUser().getUsername();
         this.movie = userList.getMovie();
         this.userListType = userList.getUserListType();
+        this.isFavorite = userList.isFavorite();
+        this.userRating = userList.getUserRating();
     }
 
     public long getId() {
@@ -50,5 +54,21 @@ public class UserListDTO {
 
     public void setUserListType(UserListType userListType) {
         this.userListType = userListType;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public Integer getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating(Integer userRating) {
+        this.userRating = userRating;
     }
 }

@@ -24,8 +24,8 @@ public class Movie {
     private String description;
     private String genre;
     private String director;
-    private String releaseDate;
-    private String duration;    private double imdbRating;
+    private String releaseDate;    private String duration;
+    private double imdbRating;    
 
     @OneToMany(mappedBy = "movie")
     @JsonIgnoreProperties("movie")

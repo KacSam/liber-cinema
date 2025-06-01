@@ -1,6 +1,7 @@
 package com.example.liber_cinema.security.jwt;
 
 import com.example.liber_cinema.security.services.UserDetailsServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +18,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
@@ -29,10 +33,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
-
-            // Szczegółowe logowanie dla debugowania
             System.out.println("Request URI: " + request.getRequestURI());
-            System.out.println("JWT from request: " + jwt);
 
             if (jwt != null) {
                 try {
@@ -43,29 +44,63 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                         String username = jwtUtils.getUserNameFromJwtToken(jwt);
                         System.out.println("Username from JWT: " + username);
 
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails,
-                                        null,
-                                        userDetails.getAuthorities());
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        try {
+                            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                            UsernamePasswordAuthenticationToken authentication =
+                                    new UsernamePasswordAuthenticationToken(
+                                            userDetails,
+                                            null,
+                                            userDetails.getAuthorities());
+                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        System.out.println("Authentication set in SecurityContext for user: " + username);
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                            System.out.println("Authentication set in SecurityContext for user: " + username);
+                        } catch (Exception e) {
+                            // Specific error for user not found
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            Map<String, Object> body = new HashMap<>();
+                            body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+                            body.put("error", "Unauthorized");
+                            body.put("message", "User not found: " + username);
+                            new ObjectMapper().writeValue(response.getOutputStream(), body);
+                            return;
+                        }
                     } else {
-                        System.out.println("JWT is invalid");
+                        // General JWT validation error
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                        Map<String, Object> body = new HashMap<>();
+                        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+                        body.put("error", "Unauthorized");
+                        body.put("message", "Invalid JWT token");
+                        new ObjectMapper().writeValue(response.getOutputStream(), body);
+                        return;
                     }
                 } catch (Exception e) {
-                    System.out.println("JWT validation exception: " + e.getMessage());
-                    e.printStackTrace();
+                    logger.error("JWT validation error: {}", e.getMessage());
+                    // JWT validation error response
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+                    body.put("error", "Unauthorized");
+                    body.put("message", "JWT validation error: " + e.getMessage());
+                    new ObjectMapper().writeValue(response.getOutputStream(), body);
+                    return;
                 }
-            } else {
-                System.out.println("JWT not present in request");
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
-            e.printStackTrace();
+            logger.error("Authentication error: {}", e.getMessage());
+            // General authentication error response
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            Map<String, Object> body = new HashMap<>();
+            body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+            body.put("error", "Unauthorized");
+            body.put("message", "Authentication error: " + e.getMessage());
+            new ObjectMapper().writeValue(response.getOutputStream(), body);
+            return;
         }
 
         filterChain.doFilter(request, response);

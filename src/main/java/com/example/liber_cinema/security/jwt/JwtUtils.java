@@ -48,30 +48,34 @@ public class JwtUtils {
                 .getBody()
                 .getSubject();
     }    public boolean validateJwtToken(String authToken) {
+        if (authToken == null || authToken.isBlank()) {
+            logger.error("JWT token is null or blank");
+            throw new IllegalArgumentException("JWT token cannot be null or blank");
+        }
+
         try {
             System.out.println("Validating JWT token: " + authToken.substring(0, Math.min(10, authToken.length())) + "...");
-            Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(authToken);
             System.out.println("JWT token validated successfully");
             return true;
         } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
-            System.out.println("Invalid JWT token: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Invalid JWT token format");
+            throw new JwtException("Invalid token format");
         } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
-            System.out.println("JWT token is expired: " + e.getMessage());
+            logger.error("JWT token has expired");
+            throw new JwtException("Token has expired");
         } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
-            System.out.println("JWT token is unsupported: " + e.getMessage());
+            logger.error("Unsupported JWT token");
+            throw new JwtException("Unsupported token type");
         } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
-            System.out.println("JWT claims string is empty: " + e.getMessage());
+            logger.error("JWT claims string is empty");
+            throw new JwtException("Token claims are empty");
         } catch (Exception e) {
             logger.error("JWT validation error: {}", e.getMessage());
-            System.out.println("JWT validation error: " + e.getMessage());
-            e.printStackTrace();
+            throw new JwtException("Token validation failed: " + e.getMessage());
         }
-
-        return false;
     }
 }

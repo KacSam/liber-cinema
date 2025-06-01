@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,7 +39,7 @@ public class UserListController {    private final UserListService userListServi
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<UserListDTO>> getUserMovieListsByType(
             @PathVariable UserListType listType) {
-        List<UserList> userLists = userListService.getUserMovieListsByType(listType);
+        List<UserList> userLists = userListService.getUserListByType(listType);
         
         List<UserListDTO> dtoList = userLists.stream()
             .map(UserListDTO::new)
@@ -50,5 +51,34 @@ public class UserListController {    private final UserListService userListServi
     public ResponseEntity<String> removeDuplicates() {
         userListService.removeDuplicates();
         return ResponseEntity.ok("Duplikaty zostały usunięte pomyślnie");
+    }
+    
+    @PostMapping("/movies/{movieId}/favorite")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserListDTO> toggleFavorite(@PathVariable Long movieId, @RequestBody Map<String, Boolean> request) {
+        if (!request.containsKey("isFavorite")) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            UserList updated = userListService.updateMovieFavoriteStatus(movieId, request.get("isFavorite"));
+            return ResponseEntity.ok(new UserListDTO(updated));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/movies/{movieId}/rating")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserListDTO> rateMovie(@PathVariable Long movieId, @RequestBody Map<String, Integer> request) {
+        if (!request.containsKey("rating")) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            UserList updated = userListService.updateMovieRating(movieId, request.get("rating"));
+            return ResponseEntity.ok(new UserListDTO(updated));        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

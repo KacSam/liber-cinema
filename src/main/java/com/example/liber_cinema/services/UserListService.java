@@ -28,7 +28,7 @@ public class UserListService {
     private final UserService userService;
     private final MovieRepository movieRepository;
     private final MovieService movieService;    @Transactional
-    public UserList addMovieToUserList(Movie movie, UserListType listType) {
+    public UserList addMovieToUserList(Movie movie, UserListType listType, boolean isFavorite, Integer userRating) {
         // Get the currently authenticated user
         User user = getCurrentUser();
         if (user == null) {
@@ -47,30 +47,33 @@ public class UserListService {
         
         // If movie exists in any list
         if (!existingEntries.isEmpty()) {
-            // If movie is already in the requested list type, return that entry
+            // If movie is already in the requested list type, update it
             Optional<UserList> sameTypeEntry = existingEntries.stream()
                 .filter(entry -> entry.getUserListType() == listType)
                 .findFirst();
                 
             if (sameTypeEntry.isPresent()) {
-                System.out.println("Movie already exists in this list type, returning existing entry");
-                return sameTypeEntry.get();
+                UserList existingEntry = sameTypeEntry.get();
+                existingEntry.setFavorite(isFavorite);
+                existingEntry.setUserRating(userRating);
+                return userListRepository.save(existingEntry);
             }
             
-            // Remove movie from all other lists
+            // Remove movie from other lists if moving between WATCHLIST and WATCHED
             System.out.println("Removing movie from other lists before adding to new list");
             existingEntries.forEach(entry -> {
                 System.out.println("Removing from list type: " + entry.getUserListType());
                 userListRepository.delete(entry);
             });
         }
-        
-        // Create a new user list entry
+          // Create a new user list entry
         UserList userList = new UserList();
         userList.setUser(user);
         userList.setMovie(existingMovie);
         userList.setUserListType(listType);
         userList.setCreatedAt(LocalDateTime.now());
+        userList.setFavorite(isFavorite);
+        userList.setUserRating(userRating);
         
         UserList savedList = userListRepository.save(userList);
         System.out.println("New user list entry created with ID: " + savedList.getId());
@@ -116,8 +119,7 @@ public class UserListService {
         lists.forEach(list -> System.out.println("List: " + list.getId() + ", Type: " + list.getUserListType() + 
                                ", Movie: " + (list.getMovie() != null ? list.getMovie().getTitle() : "null")));
         return lists;
-    }
-      public List<UserList> getUserMovieListsByType(UserListType listType) {
+    }      public List<UserList> getUserListByType(UserListType listType) {
         User currentUser = getCurrentUser();
         if (currentUser == null) {
             throw new RuntimeException("No authenticated user found");
@@ -130,5 +132,46 @@ public class UserListService {
         System.out.println("Removing duplicate entries from user lists...");
         userListRepository.removeDuplicates();
         System.out.println("Duplicate entries removed successfully");
+    }
+    @Transactional
+    public UserList updateMovieFavoriteStatus(Long movieId, boolean isFavorite) {
+        User user = getCurrentUser();
+        if (user == null) {
+            throw new RuntimeException("No authenticated user found");
+        }
+
+        Optional<UserList> userList = userListRepository.findByUserIdAndMovieIdAndUserListType(
+            user.getId(), movieId, UserListType.WATCHED);
+        
+        if (userList.isEmpty()) {
+            throw new RuntimeException("Movie not found in user's watched list");
+        }
+
+        UserList entry = userList.get();
+        entry.setFavorite(isFavorite);
+        return userListRepository.save(entry);
+    }
+
+    @Transactional
+    public UserList updateMovieRating(Long movieId, int rating) {
+        if (rating < 1 || rating > 10) {
+            throw new IllegalArgumentException("Rating must be between 1 and 10");
+        }
+
+        User user = getCurrentUser();
+        if (user == null) {
+            throw new RuntimeException("No authenticated user found");
+        }
+
+        Optional<UserList> userList = userListRepository.findByUserIdAndMovieIdAndUserListType(
+            user.getId(), movieId, UserListType.WATCHED);
+        
+        if (userList.isEmpty()) {
+            throw new RuntimeException("Movie not found in user's watched list");
+        }
+
+        UserList entry = userList.get();
+        entry.setUserRating(rating);
+        return userListRepository.save(entry);
     }
 }
