@@ -1,6 +1,7 @@
 package com.example.liber_cinema.models;
 
 
+import com.example.liber_cinema.models.enums.FriendStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +30,9 @@ public class Friend {
     @JoinColumn(name = "friend_id", nullable = false)
     private User friend;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private FriendStatus status;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

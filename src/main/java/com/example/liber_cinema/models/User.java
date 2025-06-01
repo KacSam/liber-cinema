@@ -26,7 +26,9 @@ public class User {
     private String username;
 
     @Column(unique = true, nullable = false, length = 50)
-    private String email;    @Column(nullable = false)
+    private String email;
+    
+    @Column(nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "user")
@@ -36,6 +38,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnoreProperties("user")
     private Set<UserList> userLists;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties({"user", "friend"})
+    private Set<Friend> sentFriendRequests;
+
+    @OneToMany(mappedBy = "friend")
+    @JsonIgnoreProperties({"user", "friend"})
+    private Set<Friend> receivedFriendRequests;
 
 //    @OneToMany(mappedBy = "user")
 //    private Set<ActivityLog> activityLogs;
