@@ -4,4 +4,5 @@ import com.example.liber_cinema.models.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
+    Movie findByTitleIgnoreCase(String title);
 }

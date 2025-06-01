@@ -26,23 +26,39 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
-    private final JwtUtils jwtUtils;
-
-    @PostMapping("/login")
+    private final JwtUtils jwtUtils;    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        System.out.println("Login request received for user: " + loginRequest.getUsername());
+        
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            
+            System.out.println("Login successful for user: " + userDetails.getUsername());
+            System.out.println("Generated token length: " + jwt.length());
+            System.out.println("Token starts with: " + jwt.substring(0, Math.min(10, jwt.length())));
 
-        return ResponseEntity.ok(new JwtResponse(
-                jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail()));
+            // Wydrukujmy obiekt odpowiedzi, aby upewnić się, że struktura jest poprawna
+            JwtResponse response = new JwtResponse(
+                    jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail());
+            
+            System.out.println("JWT Response object: " + response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("Login failed: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/register")

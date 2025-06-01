@@ -1,6 +1,7 @@
 package com.example.liber_cinema.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,15 +26,15 @@ public class User {
     private String username;
 
     @Column(unique = true, nullable = false, length = 50)
-    private String email;
-
-    @Column(nullable = false)
+    private String email;    @Column(nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties("user")
     private Set<Rating> ratings;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties("user")
     private Set<UserList> userLists;
 
 //    @OneToMany(mappedBy = "user")

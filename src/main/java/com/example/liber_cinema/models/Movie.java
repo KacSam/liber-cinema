@@ -1,6 +1,7 @@
 package com.example.liber_cinema.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,13 +25,14 @@ public class Movie {
     private String genre;
     private String director;
     private String releaseDate;
-    private String duration;
-    private double imdbRating;
+    private String duration;    private double imdbRating;
 
     @OneToMany(mappedBy = "movie")
+    @JsonIgnoreProperties("movie")
     private Set<Rating> ratings;
 
     @OneToMany(mappedBy = "movie")
+    @JsonIgnoreProperties("movie")
     private Set<UserList> userLists;
 
 }

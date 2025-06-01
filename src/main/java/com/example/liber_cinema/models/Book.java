@@ -1,6 +1,7 @@
 package com.example.liber_cinema.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,15 +31,14 @@ public class Book {
 
     private String description;
 
-    @Column(name = "external_rating")
-    private String externalRating;
+    @Column(name = "external_rating")    private String externalRating;
 
     @OneToMany(mappedBy = "book")
-    @JsonIgnore
+    @JsonIgnoreProperties("book")
     private Set<Rating> ratings;
 
     @OneToMany(mappedBy = "book")
-    @JsonIgnore
+    @JsonIgnoreProperties("book")
     private Set<UserList> userLists;
 
 

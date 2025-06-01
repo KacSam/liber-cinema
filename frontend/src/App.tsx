@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
-import NavBar from './components/NavBar';
-import BooksList from './components/BooksList';
 import './App.css';
+import NavBar from './components/NavBar';
+import MoviesList from './components/MoviesList';
+import UserLibrary from './components/UserLibrary';
 
-const App: React.FC = () => {
-    const [showBooks, setShowBooks] = useState<boolean>(false);
+function App() {
+  const [showMovies, setShowMovies] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
 
-    const handleBooksClick = () => {
-        setShowBooks(!showBooks); // Toggle books visibility
-    };
+  const handleMoviesClick = () => {
+    setShowMovies(true);
+    setShowLibrary(false);
+  };
 
-    return (
-        <div className="App">
-            <NavBar onBooksClick={handleBooksClick} />
-            {showBooks && <BooksList />}
-        </div>
-    );
-};
+  const handleLibraryClick = () => {
+    setShowLibrary(true);
+    setShowMovies(false);
+  };
+  return (
+    <div className="App">
+      <NavBar onMoviesClick={handleMoviesClick} onLibraryClick={handleLibraryClick} />
+      
+      <div className="content">
+        {showMovies && <MoviesList />}
+        {showLibrary && <UserLibrary />}
+      </div>
+    </div>
+  );
+}
 
 export default App;
