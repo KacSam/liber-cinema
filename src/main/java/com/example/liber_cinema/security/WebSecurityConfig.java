@@ -65,21 +65,25 @@ public class WebSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
+    }    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))            .authorizeHttpRequests(auth -> auth
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))            .authorizeHttpRequests(auth -> auth                // Publiczne endpointy
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/movies/search/**").permitAll() // Allow movie searching without auth
+                .requestMatchers("/api/movies/search/**").permitAll()
+                .requestMatchers("/api/movies").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/movies/add-to-list").authenticated()
+                .requestMatchers("/api/userlists/remove-duplicates").permitAll()
+                
+                // Endpointy chronione - wymagają autoryzacji
+                .requestMatchers("/api/movies/add-to-list").authenticated()
                 .requestMatchers("/api/userlists/**").authenticated()
                 .requestMatchers("/api/user/me").authenticated()
+                
+                // Wszystkie pozostałe żądania wymagają autoryzacji
                 .anyRequest().authenticated()
             );
 
