@@ -1,0 +1,11 @@
+target/
+!target/*.jar
+.mvn/
+mvnw
+mvnw.cmd
+.git
+.github
+.gitignore
+README.md
+frontend/
+data/

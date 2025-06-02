@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # Baza danych PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: liber-cinema-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: liber_cinema
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - liber-cinema-network
+      
+  # pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: liber-cinema-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - liber-cinema-network
+
+  # Frontend (React + Vite)
+  frontend:
+    build: 
+      context: ./frontend
+    container_name: liber-cinema-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - liber-cinema-network
+        # Backend (Spring Boot)
+  backend:
+    build: .
+    container_name: liber-cinema-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/liber_cinema
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - API_KEY=cf3784fe
+    depends_on:
+      - postgres
+    networks:
+      - liber-cinema-network
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+
+networks:
+  liber-cinema-network:
+    driver: bridge
