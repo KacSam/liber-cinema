@@ -26,7 +26,6 @@ const AddToListModal: React.FC<AddToListModalProps> = ({ movie, onClose }) => {
             return;
         }
 
-        // Sprawdź, czy ocena została dodana dla obejrzanych
         if (listType === 'WATCHED' && !rating) {
             setError('Dodaj ocenę dla obejrzanego filmu');
             return;

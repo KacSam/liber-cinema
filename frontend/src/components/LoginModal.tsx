@@ -17,12 +17,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-        setSuccess('');
-
-        try {
+        setSuccess('');        try {
             if (isLogin) {
-                console.log("Attempting login for:", username);
-                
                 // Logowanie
                 const response = await fetch('http://localhost:8080/api/auth/login', {
                     method: 'POST',
@@ -31,22 +27,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess }) => {
                     },
                     body: JSON.stringify({ username, password }),
                 });
-
-                console.log("Login response status:", response.status);
                 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error("Login error response:", errorText);
                     throw new Error('Nieprawidłowy login lub hasło');
                 }                const data = await response.json();
-                console.log("Login response data:", data);
-
-                // Analiza odpowiedzi JWT
-                console.log("JWT Response structure:", Object.keys(data));
                 const token = data.token;
                 
                 if (!token) {
-                    console.error("No token found in response. Response data:", data);
                     throw new Error("Brak tokena w odpowiedzi z serwera");
                 }                // Zapisz tokeny JWT w localStorage
                 localStorage.setItem('token', token);
@@ -56,10 +43,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess }) => {
                     username: data.username,
                     email: data.email
                 }));
-
-                // Dodajmy test tokena od razu po zapisaniu
-                const savedToken = localStorage.getItem('token');
-                console.log("Saved token:", savedToken ? `${savedToken.substring(0, 15)}...` : 'null');
                 
                 setSuccess('Zalogowano pomyślnie!');
                 setTimeout(() => {
@@ -90,9 +73,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess }) => {
                     setEmail('');
                     setSuccess('');
                 }, 2000);
-            }
-        } catch (err) {
-            console.error("Login error:", err);
+            }        } catch (err) {
             setError(err instanceof Error ? err.message : 'Wystąpił nieznany błąd');
         }
     };

@@ -16,7 +16,6 @@ const AuthTester: React.FC = () => {
                 return;
             }
             
-            // Test endpointu wymagającego autentykacji
             const response = await fetch('http://localhost:8080/api/user/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
