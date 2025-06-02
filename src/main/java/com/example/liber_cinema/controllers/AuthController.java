@@ -8,8 +8,10 @@ import com.example.liber_cinema.models.User;
 import com.example.liber_cinema.repositories.UserRepository;
 import com.example.liber_cinema.security.jwt.JwtUtils;
 import com.example.liber_cinema.security.services.UserDetailsImpl;
+import com.example.liber_cinema.security.services.UserDetailsServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +28,10 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
-    private final JwtUtils jwtUtils;    @PostMapping("/login")
+    private final JwtUtils jwtUtils;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         System.out.println("Login request received for user: " + loginRequest.getUsername());
         
@@ -34,8 +39,8 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);            String jwt = jwtUtils.generateJwtToken(authentication);
+            String refreshToken = jwtUtils.generateRefreshToken(authentication);
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             
@@ -46,6 +51,7 @@ public class AuthController {
             // Wydrukujmy obiekt odpowiedzi, aby upewnić się, że struktura jest poprawna
             JwtResponse response = new JwtResponse(
                     jwt,
+                    refreshToken,
                     userDetails.getId(),
                     userDetails.getUsername(),
                     userDetails.getEmail());
@@ -84,5 +90,28 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody String refreshToken) {
+        try {
+            if (!jwtUtils.validateJwtToken(refreshToken)) {
+                return ResponseEntity.status(401).body(new MessageResponse("Error: Invalid refresh token!"));
+            }
+
+            String username = jwtUtils.getUserNameFromJwtToken(refreshToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            
+            UsernamePasswordAuthenticationToken authentication = 
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            
+            String newToken = jwtUtils.generateJwtToken(authentication);
+            String newRefreshToken = jwtUtils.generateRefreshToken(authentication);
+            
+            return ResponseEntity.ok(new JwtResponse(newToken, newRefreshToken, ((UserDetailsImpl) userDetails).getId(), 
+                userDetails.getUsername(), ((UserDetailsImpl) userDetails).getEmail()));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(new MessageResponse("Error: Could not refresh token"));
+        }
     }
 }

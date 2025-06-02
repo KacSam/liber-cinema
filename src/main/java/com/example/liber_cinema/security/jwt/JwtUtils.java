@@ -22,7 +22,10 @@ public class JwtUtils {
     private String jwtSecret;
 
     @Value("${liber.cinema.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    private int jwtExpirationMs = 45 * 60 * 1000; // 45 minut
+
+    @Value("${liber.cinema.refreshTokenExpirationMs}")
+    private int refreshTokenExpirationMs = 7 * 24 * 60 * 60 * 1000; // 7 dni
 
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
@@ -31,6 +34,17 @@ public class JwtUtils {
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(key(), SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    public String generateRefreshToken(Authentication authentication) {
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+        return Jwts.builder()
+                .setSubject((userPrincipal.getUsername()))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + refreshTokenExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS512)
                 .compact();
     }

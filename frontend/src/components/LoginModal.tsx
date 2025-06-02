@@ -48,10 +48,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess }) => {
                 if (!token) {
                     console.error("No token found in response. Response data:", data);
                     throw new Error("Brak tokena w odpowiedzi z serwera");
-                }
-
-                // Zapisz token JWT w localStorage
+                }                // Zapisz tokeny JWT w localStorage
                 localStorage.setItem('token', token);
+                localStorage.setItem('refreshToken', data.refreshToken);
                 localStorage.setItem('user', JSON.stringify({
                     id: data.id,
                     username: data.username,
