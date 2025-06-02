@@ -18,11 +18,27 @@ public interface UserListRepository extends JpaRepository<UserList, Integer> {
     @Query("SELECT ul FROM UserList ul WHERE ul.user.id = :userId AND ul.movie IS NOT NULL")
     List<UserList> findUserMovieLists(@Param("userId") Long userId);
     
-    List<UserList> findByUserIdAndUserListType(Long userId, UserListType listType);    // Find specific entry by user, movie and list type
+    List<UserList> findByUserIdAndUserListType(Long userId, UserListType listType);
+    
+    // Find specific entry by user, movie and list type
     Optional<UserList> findByUserIdAndMovieIdAndUserListType(Long userId, Long movieId, UserListType listType);
     
     // Find all entries for a user and movie combination
-    List<UserList> findByUserIdAndMovieId(Long userId, Long movieId);
+    List<UserList> findByUserIdAndMovieId(Long userId, Long movieId);    // Find latest activities from a list of users (for friends activity feed)
+    List<UserList> findByUserIdInOrderByCreatedAtDesc(List<Long> userIds);
+    
+    // Find latest activities with limit
+    List<UserList> findTop20ByUserIdInOrderByCreatedAtDesc(List<Long> userIds);
+    
+    // Find paginated activities
+    @Query(value = "SELECT * FROM user_lists ul " +
+           "WHERE ul.user_id IN :userIds " +
+           "ORDER BY ul.created_at DESC " +
+           "LIMIT :limit OFFSET :offset", nativeQuery = true)
+    List<UserList> findActivitiesPaginated(
+            @Param("userIds") List<Long> userIds, 
+            @Param("limit") int limit, 
+            @Param("offset") int offset);
     
     // Remove duplicates
     @Modifying
