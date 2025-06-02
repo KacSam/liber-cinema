@@ -17,9 +17,8 @@ import java.util.List;
 
 @Service
 public class MovieSearch {
-    private static final Dotenv dotenv = Dotenv.load();
-    private static final String API_KEY = dotenv.get("API_KEY");
-    private static final String BASE_URL = "http://www.omdbapi.com/";    public Movie searchMovie(String title) {
+    private static final String API_KEY = System.getenv("API_KEY") != null ? System.getenv("API_KEY") : "cf3784fe";
+    private static final String BASE_URL = "http://www.omdbapi.com/";public Movie searchMovie(String title) {
         try {
             String url = BASE_URL + "?apikey=" + API_KEY + "&t=" + title.replace(" ", "+");
             String response = sendRequest(url);
