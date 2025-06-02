@@ -25,6 +25,11 @@ Liber Cinema to aplikacja internetowa do zarządzania kolekcją filmów i ksią�
 - **Docker Compose** - orkiestracja kontenerów
 - **OMDB API** - zewnętrzne API do pobierania informacji o filmach (wymaga własnego klucza API)
 
+### Uzasadnienie
+- **Backend** : Stabilny, bezpieczny, wydajny stos z Javą i Spring.
+- **Frontend** : Nowoczesny, szybki, typowany interfejs w React i TS.
+- **Docker** : Spójne środowisko, łatwe uruchamianie i wdrażanie aplikacji.
+
 ## Uruchomienie z wykorzystaniem Docker
 
 Projekt można uruchomić z wykorzystaniem Docker i Docker Compose, co znacznie upraszcza proces konfiguracji środowiska.
