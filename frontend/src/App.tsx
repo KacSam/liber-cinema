@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import './App.css';
 import NavBar from './components/NavBar';
-import MoviesList from './components/MoviesList';
 import UserLibrary from './components/UserLibrary';
+import ActivityFeed from './components/ActivityFeed';
+import FriendsPage from './components/FriendsPage';
 
 function App() {
-  const [showMovies, setShowMovies] = useState(false);
-  const [showLibrary, setShowLibrary] = useState(false);
+  const [activeView, setActiveView] = useState<'home' | 'library' | 'friends'>('home');
 
   const handleMoviesClick = () => {
-    setShowMovies(true);
-    setShowLibrary(false);
+    setActiveView('home');
   };
 
   const handleLibraryClick = () => {
-    setShowLibrary(true);
-    setShowMovies(false);
+    setActiveView('library');
+  };
+
+  const handleFriendsClick = () => {
+    setActiveView('friends');
   };
   return (
     <div className="App">
-      <NavBar onMoviesClick={handleMoviesClick} onLibraryClick={handleLibraryClick} />
+      <NavBar 
+        onMoviesClick={handleMoviesClick} 
+        onLibraryClick={handleLibraryClick} 
+        onFriendsClick={handleFriendsClick} 
+      />
       
       <div className="content">
-        {showMovies && <MoviesList />}
-        {showLibrary && <UserLibrary />}
+        {activeView === 'home' && <ActivityFeed />}
+        {activeView === 'library' && <UserLibrary />}
+        {activeView === 'friends' && <FriendsPage />}
       </div>
     </div>
   );
