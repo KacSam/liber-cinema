@@ -1,0 +1,244 @@
+.activity-feed {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.activity-feed h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.activities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.activity-item {
+    background-color: white;
+    border-radius: 6px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.activity-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.activity-username {
+    font-weight: bold;
+    color: #1a73e8;
+}
+
+.activity-time {
+    color: #70757a;
+    font-size: 0.9em;
+}
+
+.activity-content {
+    color: #333;
+    line-height: 1.5;
+}
+
+.favorite-badge {
+    display: inline-block;
+    margin-left: 10px;
+    color: #e53935;
+    font-weight: 500;
+}
+
+.refresh-button {
+    padding: 8px 16px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    margin-right: 10px;
+}
+
+.refresh-button:hover {
+    background-color: #1557b0;
+}
+
+.load-more-button {
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    color: #1a73e8;
+    border: 1px solid #1a73e8;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.load-more-button:hover {
+    background-color: #e8f0fe;
+}
+
+.load-more-button:disabled {
+    background-color: #f5f5f5;
+    color: #bdbdbd;
+    border-color: #bdbdbd;
+    cursor: not-allowed;
+}
+
+.activity-feed-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.activity-feed.empty p {
+    text-align: center;
+    color: #70757a;
+    margin-top: 30px;
+}
+
+.activity-feed.error {
+    color: #e53935;
+    text-align: center;
+    padding: 40px;
+    font-weight: 500;
+}
+
+/* Comments section styles */
+.activity-actions {
+    margin-top: 10px;
+}
+
+.comments-toggle {
+    background: none;
+    border: none;
+    color: #1a73e8;
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 5px 0;
+}
+
+.comments-toggle:hover {
+    text-decoration: underline;
+}
+
+.comments-section {
+    margin-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
+}
+
+.comments-list {
+    margin-bottom: 15px;
+}
+
+.comment-item {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.comment-username {
+    font-weight: bold;
+    color: #333;
+}
+
+.comment-time {
+    font-size: 0.8em;
+    color: #70757a;
+}
+
+.comment-content {
+    color: #333;
+    word-break: break-word;
+}
+
+.no-comments {
+    color: #70757a;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+
+.add-comment {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-comment textarea {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+}
+
+.submit-comment {
+    align-self: flex-end;
+    padding: 6px 12px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.submit-comment:hover {
+    background-color: #1557b0;
+}
+
+.submit-comment:disabled {
+    background-color: #b0bec5;
+    cursor: not-allowed;
+}
+
+.delete-comment {
+    background: none;
+    border: none;
+    color: #e53935;
+    cursor: pointer;
+    font-size: 0.8em;
+    padding: 2px 5px;
+}
+
+.delete-comment:hover {
+    text-decoration: underline;
+}
+
+.highlighted-comment {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffc107;
+    animation: highlight-pulse 2s ease-in-out 3;
+}
+
+@keyframes highlight-pulse {
+    0% { background-color: #fff8e1; }
+    50% { background-color: #ffe082; }
+    100% { background-color: #fff8e1; }
+}
