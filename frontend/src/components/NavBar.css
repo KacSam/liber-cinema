@@ -56,10 +56,12 @@
 .user-menu {
     display: flex;
     align-items: center;
+    margin-left: auto; /* Push to right side */
 }
 
 .username {
     color: #D4D6B9;
     margin-right: 10px;
+    margin-left: 10px;
     font-size: 12px;
 }

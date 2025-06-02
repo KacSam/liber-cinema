@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './NavBar.css';
 import LoginModal from './LoginModal';
 import SearchBar from './SearchBar';
+import NotificationIcon from './NotificationIcon';
 
 interface NavBarProps {
     onMoviesClick: () => void;
-    onLibraryClick: () => void; // Dodajemy nową właściwość
+    onLibraryClick: () => void;
+    onFriendsClick: () => void; // Dodajemy nową właściwość
 }
 
-const NavBar: React.FC<NavBarProps> = ({ onMoviesClick, onLibraryClick }) => {
+const NavBar: React.FC<NavBarProps> = ({ onMoviesClick, onLibraryClick, onFriendsClick }) => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
@@ -41,14 +43,14 @@ const NavBar: React.FC<NavBarProps> = ({ onMoviesClick, onLibraryClick }) => {
     return (
         <nav className="nav-container">            <div className="nav-bar">
                 <button className="nav-button" onClick={onMoviesClick}>Strona główna</button>
-                <button className="nav-button">Seriale</button>
+                <button className="nav-button" onClick={onFriendsClick}>Znajomi</button>
                 <button className="nav-button">Rankingi</button>
-                <button className="nav-button" onClick={onLibraryClick}>Moja biblioteka</button>
-                <button className="nav-button search-icon" onClick={toggleSearchBar}>
+                <button className="nav-button" onClick={onLibraryClick}>Moja biblioteka</button>                <button className="nav-button search-icon" onClick={toggleSearchBar}>
                     <i className="fa fa-search">🔍</i>
                 </button>
                 {isLoggedIn ? (
                     <div className="user-menu">
+                        <NotificationIcon />
                         <span className="username">Witaj, {username}</span>
                         <button className="nav-button logout-button" onClick={handleLogout}>Wyloguj</button>
                     </div>
